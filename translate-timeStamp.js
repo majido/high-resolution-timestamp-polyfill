@@ -45,7 +45,7 @@ getHighResTimeStamp = (function() {
         // current time in high resolution clock vs system startup clock. We use
         // the passed in event timestamp as an approximation of the current time
         // in the system startup clock.
-        return systemStartupClockOffset || (systemStartupClockOffset = Math.round(now - timeStamp));
+        return systemStartupClockOffset || (systemStartupClockOffset = Math.floor(now - timeStamp));
       }
     }
   }
