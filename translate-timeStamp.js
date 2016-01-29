@@ -25,19 +25,19 @@ getHighResTimeStamp = (function() {
       return event.timeStamp;
     };
 
-  function getTimebaseOffset(event) {
-    if (event.timeStamp >= dateNowAtLoad) {
-      // Timestamp uses Unix epoch timebase
+  function getTimebaseOffset(timeStamp) {
+    if (timeStamp >= dateNowAtLoad) {
+      // Timestamp with Unix epoch timebase
       return -performance.timing.navigationStart;
     } else {
       var now = performance.now();
-      if (event.timeStamp <= now) {
+      if (timeStamp <= now) {
         // Timestamp is high resolution
         return 0;
       } else {
         // Timestamp uses system startup timebase which is specific to Firefox.
         // Firefox uses two timebases for event timestamps:
-        //   1. System startup used for all input events.
+        //   1. System startup for all input events.
         //   2. Unix epoch for all user script constructed events.
         // (1) is handled here but (2) is handled above.
 
@@ -45,17 +45,23 @@ getHighResTimeStamp = (function() {
         // current time in high resolution clock vs system startup clock. We use
         // the passed in event timestamp as an approximation of the current time
         // in the system startup clock.
-        return systemStartupClockOffset || (systemStartupClockOffset = Math.round(now - event.timeStamp));
+        return systemStartupClockOffset || (systemStartupClockOffset = Math.round(now - timeStamp));
       }
     }
   }
 
   return function(event) {
+    var timeStamp = event.timeStamp;
     // Some events in Firefox have timeStamp of 0. For these generate a
     // timeStamp.
-    if (!event.timeStamp)
+    if (!timeStamp)
       return event.__polyfilled_timestamp || (this.__polyfilled_timestamp = performance.now());
 
-    return event.timeStamp + getTimebaseOffset(event);
-  }
+    // Script constructed events in Firefox have a unix epoch based timestamp in
+    // microseconds. (https://bugzilla.mozilla.org/show_bug.cgi?id=77992#c40)
+    if (timeStamp >= dateNowAtLoad * 1000)
+      timeStamp = timeStamp / 1000;
+
+    return timeStamp + getTimebaseOffset(timeStamp);
+  };
 })();
