@@ -20,7 +20,7 @@ getHighResTimeStamp = (function() {
   // Optimization: Check if this browser is already using DOMHighResTimeStamp
   // for event timestamp and return a no-op function in that case.
   var testTimeStamp = !!window.CustomEvent ? new CustomEvent('test').timeStamp : document.createEvent('KeyboardEvent').timeStamp;
-  if (testTimeStamp <= performance.now())
+  if (testTimeStamp && testTimeStamp <= performance.now())
     return function(event) {
       return event.timeStamp;
     };
