@@ -1,3 +1,6 @@
+// The MIT License (MIT)
+// Copyright (c) 2016 Majid Valipour
+
 // Browsers (and the DOM spec) are in the process of moving the event timestamp
 // from being a DOMTimeStamp (mostly relative to Date.now()) to being
 // a DOMHighResTimeStamp (always relative to performance.now()).
