@@ -1,0 +1,34 @@
+{
+  "name": "high-resolution-timestamp-polyfill",
+  "version": "1.0.0",
+  "description": "High-resolution timestamp polyfill and translation function",
+  "main": "translate-timeStamp.js",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "karma": "^0.13.21",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-mocha": "^0.2.2",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "mocha": "^2.4.5",
+    "phantomjs-prebuilt": "^2.1.5"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/majido/high-resolution-timestamp-polyfill.git"
+  },
+  "keywords": [
+    "High-resolution",
+    "timestamp",
+    "polyfill"
+  ],
+  "author": "Majid Valipour",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/majido/high-resolution-timestamp-polyfill/issues"
+  },
+  "homepage": "https://github.com/majido/high-resolution-timestamp-polyfill"
+}
