@@ -1,3 +1,9 @@
 language: node_js
 node_js:
   - "stable"
+
+addons:
+  sauce_connect:
+    username: "majido"
+    access_key:
+      secure: "IKCz+v2+pvcaskhQDPJ9Pl16sctmmjU6G/zZnVz9hu0EqXq85HJpvuJajgFrLabuQyZRZJwmSwB6pVH7pHkkGVOqdQ/hmrHEhi8mjiFJfO2xFE/f3zxW4VIlMmq9ocw+wW6+R/B3WAbNWivFsgVR+zQrzsGzitiqeJuDBWS3/gp4Zna+owPmVFYzOEyIlBgiiw25wJiZcM5F6G/Cb7ZAxqMHbUNBCJ7AtFkpbVDgJJm5a2Od+gQ+HrprtduGztv5YXcjopgAVSRe6Eo9Nq6Chc8Mo9N78cP6rTLEqQVdk674Uxu98B5x0hzkP5B84S2qSk/bS1y4tvTUl+aXFaD+jB+z3O7XMVxIEh3147oI8b71QZWqyEZqaiDHBjCXXsHJhjTv7qllONPNppkB7sQM+tenlIbwyfkLKNSypRYvtg7ARzF/6OJQpAplTwH+qtX91gjz4Y1WHugVTy8tw+Dvt3Xo2Dy21poRbhF1AxE0a9ux8h/zX7ljVoUnlqXCaedqFJ15nqGH+crjyTw9rwbXmt65w3MT/tbcI4nQOd0JOGtJWGOUPOQtalZJTLSFWI+r1gcPLhTuXXk4TaUjmTuNSx8/PQvJGBeUbY3gMFLRVtcFKC07UBA/gtIACq9U+a1a85Sx3+uVL2yxORC5YLGOSVK17Vzzzje66KDId2mAADk="
