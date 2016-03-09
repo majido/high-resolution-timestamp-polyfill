@@ -1,3 +1,5 @@
+# High-Resolution Timestamp Polyfill [![Build Status](https://travis-ci.org/majido/high-resolution-timestamp-polyfill.svg?branch=master)](https://travis-ci.org/majido/high-resolution-timestamp-polyfill)
+
 ## Introduction
 
 This repository hosts utilities to help with Event.timeStamp transition from
@@ -29,8 +31,9 @@ on Chrome Developer's blog.
 * [Conversion function][conversion]: A simple cross-browser utility function
   that allows translation of event timestamp to a DOMHighResTimeStamp.
 
-* [Polyfill (WIP)][polyfill]: Makes Event.timeStamp to always be a
-  DOMHighResTimeStamp. This is still WIP as it does not work well in Safari yet.
+* [Polyfill (work in progress)][polyfill]: Makes Event.timeStamp to always be
+  a DOMHighResTimeStamp. This is WIP as it does not work well in Safari yet. Safari support requires a fix for [this WebKit bug][webkit-limitation] that
+  prevents overriding getter and setter on the prototype.
 
 ## License
 
@@ -43,7 +46,7 @@ on Chrome Developer's blog.
 [chrome-bug]: https://www.chromestatus.com/features/5523910145605632
 [firefox-bug]: https://bugzilla.mozilla.org/show_bug.cgi?id=1026804
 [spec-bug]: https://github.com/whatwg/dom/issues/23
-
+[webkit-limitation]: https://bugs.webkit.org/show_bug.cgi?id=49739
 
 [blogpost]: https://developers.google.com/web/updates/2016/01/high-res-timestamps?hl=en
 
