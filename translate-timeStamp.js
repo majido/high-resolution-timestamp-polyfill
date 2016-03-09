@@ -12,18 +12,35 @@
 // Usage example:
 // var latency = performance.now() - getHighResTimeStamp(event);
 getHighResTimeStamp = (function() {
+  // Check and exit early if window.performance.now() or Date.now() are missing
+  // A polyfill for both above is: https://gist.github.com/paulirish/5438650
+  if (!('performance' in window && 'now' in window.performance)) {
+    console.warn("window.performance.now() is required.");
+    return noop;
+  }
+  if (!('now' in Date)) {
+    console.warn("Date.now() is required.");
+    return noop;
+  }
+
+  // Optimization: Check if this browser is already using DOMHighResTimeStamp
+  // for event timestamp and return a no-op function in that case.
+  var hasCustomEvent = 'CustomEvent' in window &&
+      (typeof window.CustomEvent === 'function' ||
+       window.CustomEvent.toString().indexOf('CustomEventConstructor') > -1);
+
+  var testTimeStamp = hasCustomEvent ? new CustomEvent('test').timeStamp : document.createEvent('KeyboardEvent').timeStamp;
+  if (testTimeStamp && testTimeStamp <= performance.now())
+    return noop;
+
+  function noop(event) {
+    return event.timeStamp;
+  };
+
   var dateNowAtLoad = Date.now();
   // The offset value to system startup clock that is being used by Firefox as
   // timebase for all input events.
   var systemStartupClockOffset;
-
-  // Optimization: Check if this browser is already using DOMHighResTimeStamp
-  // for event timestamp and return a no-op function in that case.
-  var testTimeStamp = !!window.CustomEvent ? new CustomEvent('test').timeStamp : document.createEvent('KeyboardEvent').timeStamp;
-  if (testTimeStamp && testTimeStamp <= performance.now())
-    return function(event) {
-      return event.timeStamp;
-    };
 
   function getTimebaseOffset(timeStamp) {
     if (timeStamp >= dateNowAtLoad) {
