@@ -29,7 +29,8 @@ getHighResTimeStamp = (function() {
       (typeof window.CustomEvent === 'function' ||
        window.CustomEvent.toString().indexOf('CustomEventConstructor') > -1);
 
-  var testTimeStamp = hasCustomEvent ? new CustomEvent('test').timeStamp : document.createEvent('KeyboardEvent').timeStamp;
+  var testTimeStamp = hasCustomEvent ? new CustomEvent('test').timeStamp
+                                     : document.createEvent('KeyboardEvent').timeStamp;
   if (testTimeStamp && testTimeStamp <= performance.now())
     return noop;
 
@@ -37,7 +38,16 @@ getHighResTimeStamp = (function() {
     return event.timeStamp;
   };
 
+  var performanceNowAtLoad = performance.now();
   var dateNowAtLoad = Date.now();
+
+  // The offset value to hr-time time origin. In principal this value should be
+  // |-performance.timing.navigationStart| but IE 10, 11 disagree.
+  // TODO: We should detect IE and use the fallback in that case which is more
+  // accurate.
+  var highResClockOffset = performance && 'timing' in performance ? -performance.timing.navigationStart
+                                                                  : performanceNowAtLoad - dateNowAtLoad;
+
   // The offset value to system startup clock that is being used by Firefox as
   // timebase for all input events.
   var systemStartupClockOffset;
@@ -45,7 +55,7 @@ getHighResTimeStamp = (function() {
   function getTimebaseOffset(timeStamp) {
     if (timeStamp >= dateNowAtLoad) {
       // Timestamp with Unix epoch timebase
-      return -performance.timing.navigationStart;
+      return highResClockOffset;
     } else {
       var now = performance.now();
       if (timeStamp <= now) {
@@ -62,7 +72,7 @@ getHighResTimeStamp = (function() {
         // current time in high resolution clock vs system startup clock. We use
         // the passed in event timestamp as an approximation of the current time
         // in the system startup clock.
-        return systemStartupClockOffset || (systemStartupClockOffset = Math.floor(now - timeStamp));
+        return systemStartupClockOffset || (systemStartupClockOffset = now - timeStamp);
       }
     }
   }
