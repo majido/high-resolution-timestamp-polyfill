@@ -1,5 +1,9 @@
 module.exports = function(config) {
-  // Check out https://saucelabs.com/platforms for all browser/platform combos
+  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+    console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.')
+    process.exit(1)
+  }
+
   var customLaunchers = {
     sl_chrome_old: {
       base: 'SauceLabs',
