@@ -80,15 +80,16 @@ module.exports = function(config) {
 
   config.set({
     logLevel: 'LOG_DEBUG',
-  
+
     singleRun : true,
     autoWatch : false,
- 
+
     frameworks: [
       'mocha', 'chai'
     ],
- 
+
     files: [
+      'test/performance-now-polyfill.js',
       'translate-timeStamp.js',
       'test/*.js'
     ],
@@ -97,6 +98,6 @@ module.exports = function(config) {
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
     reporters: ['progress', 'saucelabs'],
- 
+
   });
 };
