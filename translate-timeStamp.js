@@ -11,11 +11,12 @@
 //
 // Usage example:
 // var latency = performance.now() - getHighResTimeStamp(event);
-getHighResTimeStamp = (function() {
-  // Check and exit early if window.performance.now() or Date.now() are missing
+getHighResTimeStamp = (function(self) {
+  'use strict';
+  // Check and exit early if performance.now() or Date.now() are missing
   // A polyfill for both above is: https://gist.github.com/paulirish/5438650
-  if (!('performance' in window && 'now' in window.performance)) {
-    console.warn("window.performance.now() is required.");
+  if (!('performance' in self && 'now' in self.performance)) {
+    console.warn("performance.now() is required.");
     return noop;
   }
   if (!('now' in Date)) {
@@ -25,12 +26,12 @@ getHighResTimeStamp = (function() {
 
   // Optimization: Check if this browser is already using DOMHighResTimeStamp
   // for event timestamp and return a no-op function in that case.
-  var hasCustomEvent = 'CustomEvent' in window &&
-      (typeof window.CustomEvent === 'function' ||
-       window.CustomEvent.toString().indexOf('CustomEventConstructor') > -1);
+  var hasCustomEvent = 'CustomEvent' in self &&
+      (typeof self.CustomEvent === 'function' ||
+       self.CustomEvent.toString().indexOf('CustomEventConstructor') > -1);
 
-  var testTimeStamp = hasCustomEvent ? new CustomEvent('test').timeStamp
-                                     : document.createEvent('KeyboardEvent').timeStamp;
+  var testTimeStamp = hasCustomEvent ? new self.CustomEvent('test').timeStamp
+                                     : self.document.createEvent('KeyboardEvent').timeStamp;
   if (testTimeStamp && testTimeStamp <= performance.now())
     return noop;
 
@@ -44,7 +45,7 @@ getHighResTimeStamp = (function() {
   // The offset value to hr-time time origin. In principal this value should be
   // |-performance.timing.navigationStart| but IE 10, 11 disagree.
   // TODO: We should detect IE and use the fallback in that case which is more
-  // accurate.
+  // accurate. bug: https://connect.microsoft.com/IE/Feedback/Details/2479325
   var highResClockOffset = performance && 'timing' in performance ? -performance.timing.navigationStart
                                                                   : performanceNowAtLoad - dateNowAtLoad;
 
@@ -77,12 +78,13 @@ getHighResTimeStamp = (function() {
     }
   }
 
-  return function(event) {
-    var timeStamp = event.timeStamp;
+  return function(event, timeStamp) {
+    if (typeof timeStamp === 'undefined')
+      timeStamp = event.timeStamp;
     // Some events in Firefox have timeStamp of 0. For these generate a
     // timeStamp.
     if (!timeStamp)
-      return event.__polyfilled_timestamp || (this.__polyfilled_timestamp = performance.now());
+      return event.__polyfilled_timestamp || (event.__polyfilled_timestamp = performance.now());
 
     // Script constructed events in Firefox have a unix epoch based timestamp in
     // microseconds. (https://bugzilla.mozilla.org/show_bug.cgi?id=77992#c40)
@@ -91,4 +93,5 @@ getHighResTimeStamp = (function() {
 
     return timeStamp + getTimebaseOffset(timeStamp);
   };
-})();
+
+})(this);

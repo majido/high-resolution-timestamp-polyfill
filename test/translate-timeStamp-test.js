@@ -15,11 +15,35 @@ describe('getHighResTimeStamp', function() {
     };
   }
 
+  function createFakeEventWithZeroTS() {
+    return {
+      type: 'FakeEventWithZeroTS',
+      timeStamp: 0
+    };
+  }
+
+  function createFakeEventWithMicrosecondsTS() {
+    return {
+      type: 'FakeEventWithMicrosecondsTS',
+      timeStamp: Date.now() * 1000
+    };
+  }
+
+  function createFakeEventWithSystemStartupTS() {
+    return {
+      type: 'FakeEventWithSystemStartupTS',
+      timeStamp: performance.now() * 42 // performance.now() < ts < Date.now()
+    };
+  }
+
   var tests = [
     createFakeEvent,
+    createFakeEventWithZeroTS,
+    createFakeEventWithMicrosecondsTS,
+    createFakeEventWithSystemStartupTS,
     // In IE 9, 10 the CustomEvent timestamps may actually be higher than
     // Date.now() which breaks this test.
-    createCustomEvent
+    // createCustomEvent
   ];
 
   tests.forEach(function(createEventFunc) {
@@ -35,7 +59,4 @@ describe('getHighResTimeStamp', function() {
       expect(Math.round(hrTimestamp)).to.be.most(after);
     });
   });
-
 });
-
-
